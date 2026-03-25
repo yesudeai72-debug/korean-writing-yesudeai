@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3과 어휘 - 산성비 게임</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg-top: #eef8ff;
+        --bg-bottom: #fff2e9;
+        --panel: rgba(255, 255, 255, 0.92);
+        --line: rgba(24, 37, 56, 0.08);
+        --text-main: #1c2532;
+        --text-muted: #627081;
+        --navy: #1d3a57;
+        --accent: #ea6b37;
+        --danger: #d95b5b;
+        --success: #1f8f61;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 20px;
+        font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
+          sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.94), transparent 26%),
+          linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+      }
+
+      .shell {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .topbar a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .headline {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .panel,
+      .game-board,
+      .guide-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 16px 42px rgba(33, 49, 70, 0.08);
+      }
+
+      .headline-card,
+      .status-card,
+      .guide-card {
+        padding: 22px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(234, 107, 55, 0.12);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 16px 0 10px;
+        font-size: clamp(2.2rem, 6vw, 3.8rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+      }
+
+      p {
+        margin: 0;
+        color: var(--text-muted);
+        line-height: 1.72;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .stat {
+        padding: 14px;
+        border-radius: 20px;
+        background: #f7fafc;
+        border: 1px solid #e2ebf3;
+      }
+
+      .stat span {
+        display: block;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+
+      .stat strong {
+        font-size: 1.3rem;
+      }
+
+      .game-board {
+        padding: 18px;
+      }
+
+      .game-meta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .prompt-card {
+        position: relative;
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, #ffffff, #fff8f3);
+        border: 1px solid #ece4de;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 5px rgba(29, 58, 87, 0.12),
+          0 22px 34px rgba(29, 58, 87, 0.12);
+      }
+
+      .prompt-card span {
+        display: inline-flex;
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #edf5fb;
+        color: var(--navy);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .prompt-card strong {
+        display: block;
+        font-size: 1.45rem;
+        line-height: 1.4;
+        position: relative;
+        z-index: 1;
+      }
+
+      .prompt-card::after {
+        content: "";
+        position: absolute;
+        inset: auto -10% -35% -10%;
+        height: 80px;
+        background:
+          radial-gradient(circle at 10% 50%, rgba(29, 58, 87, 0.08), transparent 22%),
+          radial-gradient(circle at 35% 50%, rgba(29, 58, 87, 0.08), transparent 22%),
+          radial-gradient(circle at 60% 50%, rgba(29, 58, 87, 0.08), transparent 22%),
+          radial-gradient(circle at 85% 50%, rgba(29, 58, 87, 0.08), transparent 22%);
+        opacity: 0;
+        transform: translateX(-8%);
+      }
+
+      .prompt-card.wave::after {
+        animation: promptWave 1.9s linear infinite;
+        opacity: 1;
+      }
+
+      .prompt-card.wave {
+        animation: panelPulse 1.45s ease-in-out infinite;
+      }
+
+      .control-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        min-height: 46px;
+        padding: 0 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary-button {
+        position: relative;
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 14px 24px rgba(234, 107, 55, 0.22);
+      }
+
+      .primary-button.focus-pulse {
+        animation: buttonLift 1.5s ease-in-out infinite;
+      }
+
+      .primary-button.focus-pulse::before,
+      .primary-button.focus-pulse::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 999px;
+        border: 2px solid rgba(234, 107, 55, 0.28);
+        animation: ripple 1.8s ease-out infinite;
+      }
+
+      .primary-button.focus-pulse::after {
+        animation-delay: 0.9s;
+      }
+
+      .secondary-button {
+        background: white;
+        color: var(--navy);
+        border: 1px solid var(--line);
+      }
+
+      .rain-zone {
+        position: relative;
+        min-height: 420px;
+        overflow: hidden;
+        border-radius: 28px;
+        background:
+          linear-gradient(180deg, rgba(211, 236, 255, 0.5), rgba(255, 255, 255, 0.82)),
+          linear-gradient(180deg, #eff8ff, #fff7f2);
+        border: 1px solid #dbe8f3;
+      }
+
+      .rain-word {
+        position: absolute;
+        padding: 11px 16px;
+        border-radius: 999px;
+        background: white;
+        border: 1px solid #d6e1eb;
+        box-shadow: 0 10px 22px rgba(33, 49, 70, 0.09);
+        font-weight: 700;
+        white-space: nowrap;
+        transform: translate(-50%, 0);
+      }
+
+      .danger-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 74px;
+        border-top: 3px dashed rgba(217, 91, 91, 0.4);
+      }
+
+      .input-area {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        margin-top: 14px;
+        position: relative;
+      }
+
+      .input-area input {
+        width: 100%;
+        min-height: 52px;
+        border-radius: 18px;
+        border: 1px solid #dce6ef;
+        padding: 0 16px;
+        font: inherit;
+        font-size: 1rem;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .input-area.active input {
+        border-color: rgba(29, 58, 87, 0.25);
+        box-shadow:
+          0 0 0 10px rgba(29, 58, 87, 0.14),
+          0 16px 30px rgba(29, 58, 87, 0.12);
+      }
+
+      .input-area.guide::before {
+        content: "";
+        position: absolute;
+        left: 14px;
+        right: 110px;
+        top: -18px;
+        height: 8px;
+        border-radius: 999px;
+        background:
+          linear-gradient(90deg,
+            rgba(29, 58, 87, 0) 0%,
+            rgba(29, 58, 87, 0.12) 25%,
+            rgba(234, 107, 55, 0.36) 50%,
+            rgba(29, 58, 87, 0.12) 75%,
+            rgba(29, 58, 87, 0) 100%);
+        animation: scanLine 1.4s linear infinite;
+      }
+
+      .input-area.guide input {
+        animation: inputBreath 1.6s ease-in-out infinite;
+      }
+
+      .message {
+        margin-top: 12px;
+        min-height: 28px;
+        font-weight: 700;
+      }
+
+      .message.success {
+        color: var(--success);
+      }
+
+      .message.fail {
+        color: var(--danger);
+      }
+
+      .message.flash {
+        animation: flashText 0.55s ease;
+      }
+
+      .guide-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .guide-card h2 {
+        margin: 0 0 10px;
+        font-size: 1.15rem;
+      }
+
+      .guide-card ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      @media (max-width: 920px) {
+        .headline,
+        .guide-grid,
+        .game-meta,
+        .input-area {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 12px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .rain-zone {
+          min-height: 360px;
+        }
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(0.96);
+          opacity: 0.7;
+        }
+
+        100% {
+          transform: scale(1.18);
+          opacity: 0;
+        }
+      }
+
+      @keyframes buttonLift {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-2px);
+        }
+      }
+
+      @keyframes promptWave {
+        0% {
+          transform: translateX(-18%);
+        }
+
+        100% {
+          transform: translateX(18%);
+        }
+      }
+
+      @keyframes scanLine {
+        0% {
+          transform: translateX(-4%);
+          opacity: 0.35;
+        }
+
+        50% {
+          opacity: 1;
+        }
+
+        100% {
+          transform: translateX(4%);
+          opacity: 0.35;
+        }
+      }
+
+      @keyframes inputBreath {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-1px);
+        }
+      }
+
+      @keyframes flashText {
+        0% {
+          opacity: 0.3;
+          transform: translateY(2px);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes panelPulse {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-3px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <a href="../index.html">3과 메뉴로 돌아가기</a>
+        <a href="../../index.html">메인으로 돌아가기</a>
+      </div>
+
+      <section class="headline">
+        <article class="panel headline-card">
+          <div class="eyebrow">Vocabulary Rain</div>
+          <h1>어휘 산성비 게임</h1>
+          <p>
+            제시된 뜻에 맞는 단어를 빠르게 입력해 떨어지는 단어를 제거하세요.
+            정답은 점수를 올리고, 놓치거나 오답을 많이 내면 생명이 줄어듭니다.
+          </p>
+        </article>
+        <article class="panel status-card">
+          <div class="stats">
+            <div class="stat">
+              <span>점수</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span>생명</span>
+              <strong id="lives">5</strong>
+            </div>
+            <div class="stat">
+              <span>라운드</span>
+              <strong id="round">1</strong>
+            </div>
+            <div class="stat">
+              <span>속도</span>
+              <strong id="speed">보통</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="game-board">
+        <div class="game-meta">
+          <div class="prompt-card">
+            <span>현재 뜻</span>
+            <strong id="prompt">시작 버튼을 누르면 뜻이 나타납니다.</strong>
+          </div>
+          <div class="control-row">
+            <button class="primary-button" id="start-button">게임 시작</button>
+            <button class="secondary-button" id="restart-button">다시 시작</button>
+          </div>
+        </div>
+
+        <div class="rain-zone" id="rain-zone">
+          <div class="danger-line"></div>
+        </div>
+
+        <div class="input-area">
+          <input
+            id="answer-input"
+            type="text"
+            placeholder="정답 단어를 입력하고 Enter를 누르세요"
+            autocomplete="off"
+          />
+          <button class="primary-button" id="submit-button">입력</button>
+        </div>
+        <div class="message" id="message"></div>
+      </section>
+
+      <section class="guide-grid">
+        <article class="guide-card">
+          <h2>플레이 방식</h2>
+          <ul>
+            <li>상단 뜻을 읽고 알맞은 단어를 입력합니다.</li>
+            <li>정답 단어가 화면에 있으면 즉시 제거됩니다.</li>
+            <li>여러 개가 쌓이기 전에 빠르게 처리하는 것이 핵심입니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card">
+          <h2>게임 아이디어 확장</h2>
+          <ul>
+            <li>후반 라운드에서 예문 힌트를 추가할 수 있습니다.</li>
+            <li>오답 단어를 누적해 복습 라운드로 재등장시킬 수 있습니다.</li>
+            <li>타이핑 대신 클릭 모드도 추가해 초급 학습에 맞출 수 있습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card">
+          <h2>현재 어휘 세트</h2>
+          <ul>
+            <li>반짝반짝</li>
+            <li>두근두근</li>
+            <li>무럭무럭</li>
+            <li>고래고래</li>
+            <li>또렷하다</li>
+            <li>성실하다</li>
+          </ul>
+        </article>
+      </section>
+    </div>
+
+    <script>
+      const words = [
+        { word: "반짝반짝", meaning: "작은 빛이 잇따라 잠깐 나타나는 모양" },
+        { word: "두근두근", meaning: "놀라거나 기대되어 가슴이 자꾸 뛰는 모양" },
+        { word: "무럭무럭", meaning: "아이들이나 식물이 매우 잘 자라는 모양" },
+        { word: "고래고래", meaning: "매우 큰 소리로 계속 외치는 모양" },
+        { word: "또렷하다", meaning: "분명하고 뚜렷해 흐리지 않다" },
+        { word: "성실하다", meaning: "정성스럽고 책임감 있게 행동하다" },
+        { word: "온화하다", meaning: "성격이나 분위기가 부드럽고 따뜻하다" },
+        { word: "선명하다", meaning: "색이나 모양이 아주 뚜렷하다" },
+      ];
+
+      const distractors = [
+        "구름", "책상", "느리다", "웃음", "달리다", "여행", "희미하다",
+        "조용히", "마음", "빛나다", "문장", "차분하다"
+      ];
+
+      const rainZone = document.getElementById("rain-zone");
+      const prompt = document.getElementById("prompt");
+      const scoreEl = document.getElementById("score");
+      const livesEl = document.getElementById("lives");
+      const roundEl = document.getElementById("round");
+      const speedEl = document.getElementById("speed");
+      const messageEl = document.getElementById("message");
+      const promptCard = document.querySelector(".prompt-card");
+      const inputArea = document.querySelector(".input-area");
+      const input = document.getElementById("answer-input");
+      const startButton = document.getElementById("start-button");
+      const restartButton = document.getElementById("restart-button");
+      const submitButton = document.getElementById("submit-button");
+
+      let score = 0;
+      let lives = 5;
+      let round = 1;
+      let currentPrompt = null;
+      let activeWords = [];
+      let spawnTimer = null;
+      let moveTimer = null;
+      let playing = false;
+
+      function sample(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function updateHud() {
+        scoreEl.textContent = score;
+        livesEl.textContent = lives;
+        roundEl.textContent = round;
+        speedEl.textContent = round < 3 ? "보통" : round < 5 ? "빠름" : "매우 빠름";
+      }
+
+      function setMessage(text, type) {
+        messageEl.textContent = text;
+        messageEl.className = "message" + (type ? " " + type : "");
+        messageEl.classList.add("flash");
+        window.clearTimeout(setMessage.flashTimer);
+        setMessage.flashTimer = window.setTimeout(() => {
+          messageEl.classList.remove("flash");
+        }, 560);
+      }
+
+      function updateGuidance() {
+        startButton.classList.toggle("focus-pulse", !playing);
+        promptCard.classList.toggle("wave", playing);
+        inputArea.classList.toggle("guide", playing);
+        inputArea.classList.toggle("active", playing);
+        input.disabled = !playing;
+      }
+
+      function choosePrompt() {
+        currentPrompt = sample(words);
+        prompt.textContent = currentPrompt.meaning;
+      }
+
+      function clearWords() {
+        activeWords.forEach((item) => item.el.remove());
+        activeWords = [];
+      }
+
+      function spawnWord() {
+        const useCorrect = Math.random() < 0.45;
+        const text = useCorrect && currentPrompt
+          ? currentPrompt.word
+          : Math.random() < 0.5
+            ? sample(words).word
+            : sample(distractors);
+
+        const el = document.createElement("div");
+        el.className = "rain-word";
+        el.textContent = text;
+
+        const zoneWidth = rainZone.clientWidth;
+        const x = 40 + Math.random() * Math.max(zoneWidth - 80, 60);
+        const y = -20;
+        const speed = 0.6 + Math.random() * 0.45 + round * 0.12;
+
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        rainZone.appendChild(el);
+
+        activeWords.push({ text, x, y, speed, el });
+      }
+
+      function moveWords() {
+        const limit = rainZone.clientHeight - 88;
+
+        activeWords = activeWords.filter((item) => {
+          item.y += item.speed;
+          item.el.style.top = item.y + "px";
+
+          if (item.y >= limit) {
+            item.el.remove();
+            if (currentPrompt && item.text === currentPrompt.word) {
+              lives -= 1;
+              updateHud();
+              setMessage("정답 단어를 놓쳤어요. 생명이 1 줄었습니다.", "fail");
+              if (lives <= 0) {
+                endGame();
+              }
+            }
+            return false;
+          }
+
+          return true;
+        });
+      }
+
+      function nextRoundIfNeeded() {
+        const nextRound = Math.floor(score / 60) + 1;
+        if (nextRound !== round) {
+          round = nextRound;
+          updateHud();
+        }
+      }
+
+      function submitAnswer() {
+        if (!playing) {
+          setMessage("먼저 게임을 시작해 주세요.", "fail");
+          return;
+        }
+
+        const answer = input.value.trim();
+        if (!answer) {
+          return;
+        }
+
+        const hitIndex = activeWords.findIndex(
+          (item) => item.text === answer && currentPrompt && item.text === currentPrompt.word
+        );
+
+        if (hitIndex >= 0) {
+          activeWords[hitIndex].el.remove();
+          activeWords.splice(hitIndex, 1);
+          score += 10;
+          updateHud();
+          nextRoundIfNeeded();
+          choosePrompt();
+          setMessage("정답입니다. 단어를 제거했어요.", "success");
+        } else {
+          lives -= 1;
+          updateHud();
+          setMessage("정답 단어가 아니에요. 생명이 1 줄었습니다.", "fail");
+          if (lives <= 0) {
+            endGame();
+          }
+        }
+
+        input.value = "";
+        input.focus();
+      }
+
+      function startGame() {
+        clearWords();
+        score = 0;
+        lives = 5;
+        round = 1;
+        playing = true;
+        updateHud();
+        choosePrompt();
+        setMessage("게임이 시작됐습니다. 뜻에 맞는 단어를 빠르게 입력하세요.", "");
+        input.value = "";
+        input.focus();
+        updateGuidance();
+
+        clearInterval(spawnTimer);
+        clearInterval(moveTimer);
+
+        spawnWord();
+        spawnTimer = setInterval(() => {
+          spawnWord();
+        }, 1400);
+
+        moveTimer = setInterval(() => {
+          moveWords();
+        }, 24);
+      }
+
+      function endGame() {
+        playing = false;
+        clearInterval(spawnTimer);
+        clearInterval(moveTimer);
+        setMessage("게임 종료. 다시 시작해서 최고 점수를 노려 보세요.", "fail");
+        prompt.textContent = "게임이 종료되었습니다. 다시 시작 버튼을 눌러 재도전하세요.";
+        updateGuidance();
+      }
+
+      startButton.addEventListener("click", startGame);
+      restartButton.addEventListener("click", startGame);
+      submitButton.addEventListener("click", submitAnswer);
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          submitAnswer();
+        }
+      });
+
+      updateHud();
+      updateGuidance();
+    </script>
+  </body>
+</html>
