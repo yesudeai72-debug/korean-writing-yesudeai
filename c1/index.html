@@ -3,66 +3,910 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1과 - c1</title>
+    <title>1과 - 문장 구성 및 호응 연습</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
     <style>
+      :root {
+        color-scheme: light;
+        --bg-start: #fff7ee;
+        --bg-end: #eef4fb;
+        --panel: rgba(255, 255, 255, 0.94);
+        --line: rgba(31, 26, 23, 0.08);
+        --text-main: #1f2430;
+        --text-muted: #64707d;
+        --accent: #d96c3d;
+        --accent-strong: #29435c;
+        --accent-soft: #edf4fb;
+        --success: #1f8f5f;
+        --danger: #cb4f4f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
         padding: 24px;
         font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
           sans-serif;
-        background: linear-gradient(135deg, #fff8ef, #f6efe4);
-        color: #1f1a17;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 28%),
+          linear-gradient(135deg, var(--bg-start), var(--bg-end));
       }
 
-      main {
-        width: min(680px, 100%);
-        padding: 44px 30px;
-        border-radius: 28px;
-        background: rgba(255, 255, 255, 0.88);
-        box-shadow: 0 18px 48px rgba(70, 45, 28, 0.12);
-        text-align: center;
-        border: 1px solid rgba(31, 26, 23, 0.08);
-        backdrop-filter: blur(12px);
+      .shell {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 28px;
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        box-shadow: 0 24px 70px rgba(34, 45, 63, 0.12);
+        backdrop-filter: blur(16px);
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 22px;
+      }
+
+      .topbar a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(217, 108, 61, 0.12);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
       }
 
       h1 {
-        margin: 0 0 14px;
-        font-size: clamp(2.1rem, 5vw, 3.4rem);
-        font-weight: 800;
-        letter-spacing: -0.04em;
+        margin: 14px 0 10px;
+        font-size: clamp(2.2rem, 5vw, 3.7rem);
+        letter-spacing: -0.05em;
+        line-height: 1.02;
       }
 
-      p {
-        margin: 0;
+      .intro {
+        max-width: 48rem;
+        color: var(--text-muted);
         font-size: 1.02rem;
-        line-height: 1.7;
-        color: #6a5f57;
+        line-height: 1.75;
       }
 
-      p + p {
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .hero-card,
+      .stats-card,
+      .workspace,
+      .panel,
+      .result-box {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 16px 40px rgba(34, 45, 63, 0.08);
+      }
+
+      .hero-card,
+      .stats-card {
+        padding: 22px;
+      }
+
+      .hero-card strong,
+      .stats-card strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--accent-strong);
+      }
+
+      .hero-card ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .stat {
+        padding: 14px;
+        border-radius: 20px;
+        background: #f7fafc;
+        border: 1px solid #e4ebf2;
+      }
+
+      .stat span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.84rem;
+        margin-bottom: 4px;
+      }
+
+      .stat strong {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin: 24px 0 18px;
+      }
+
+      .tab-button {
+        border: 0;
+        border-radius: 999px;
+        padding: 14px 18px;
+        font: inherit;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-muted);
+        cursor: pointer;
+        border: 1px solid var(--line);
+      }
+
+      .tab-button.active {
+        background: var(--accent-strong);
+        color: white;
+        border-color: var(--accent-strong);
+        box-shadow: 0 16px 26px rgba(41, 67, 92, 0.18);
+      }
+
+      .workspace {
+        padding: 20px;
+      }
+
+      .workspace-grid {
+        display: grid;
+        grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
+        gap: 18px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 1.15rem;
+        letter-spacing: -0.03em;
+      }
+
+      .item-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .item-button {
+        width: 100%;
+        text-align: left;
+        border: 1px solid #dce5ee;
+        background: white;
+        border-radius: 18px;
+        padding: 14px 16px;
+        font: inherit;
+        cursor: pointer;
+        transition: transform 0.18s ease, border-color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .item-button strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1rem;
+      }
+
+      .item-button span {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      .item-button.active {
+        border-color: rgba(41, 67, 92, 0.32);
+        background: #f7fbff;
+        box-shadow: 0 10px 24px rgba(41, 67, 92, 0.09);
+        transform: translateY(-1px);
+      }
+
+      .sentence-box {
+        padding: 22px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), #fff7f1);
+        border: 1px solid var(--line);
+      }
+
+      .sentence-box h3 {
+        margin: 0 0 8px;
+        font-size: 1.35rem;
+      }
+
+      .meaning {
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      .sentence-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 18px;
+        align-items: end;
+        margin-top: 22px;
+      }
+
+      .slot {
+        min-width: 120px;
+      }
+
+      .slot-label {
+        display: inline-flex;
+        margin-bottom: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .slot-value {
+        min-height: 48px;
+        padding: 10px 0;
+        border-bottom: 3px solid #d4dde7;
+        font-size: 1.12rem;
+        font-weight: 700;
+      }
+
+      .slot-value.correct {
+        border-color: rgba(31, 143, 95, 0.4);
+        color: var(--success);
+      }
+
+      .slot-value.incorrect {
+        border-color: rgba(203, 79, 79, 0.35);
+        color: var(--danger);
+      }
+
+      .particle,
+      .predicate {
+        padding-bottom: 10px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--accent-strong);
+      }
+
+      .choice-groups {
+        display: grid;
+        gap: 16px;
+        margin-top: 22px;
+      }
+
+      .choice-group {
+        padding: 18px;
+        border-radius: 22px;
+        background: #f8fafc;
+        border: 1px solid #e4ebf2;
+      }
+
+      .choice-group h4 {
+        margin: 0 0 12px;
+        font-size: 1rem;
+      }
+
+      .choice-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .choice-button {
+        border: 1px solid #d9e1ea;
+        border-radius: 999px;
+        background: white;
+        color: #435160;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .choice-button.selected {
+        background: #eaf3ff;
+        border-color: #7aa5d1;
+        color: #22476e;
+      }
+
+      .result-box {
+        margin-top: 18px;
+        padding: 16px 18px;
+        display: none;
+      }
+
+      .result-box.show {
+        display: block;
+      }
+
+      .result-box.success {
+        background: rgba(31, 143, 95, 0.08);
+        border-color: rgba(31, 143, 95, 0.16);
+        color: var(--success);
+      }
+
+      .result-box.fail {
+        background: rgba(203, 79, 79, 0.08);
+        border-color: rgba(203, 79, 79, 0.16);
+        color: var(--danger);
+      }
+
+      .action-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
         margin-top: 18px;
       }
 
-      a {
-        color: #d96c3d;
+      .action-row button,
+      .action-row a {
+        min-height: 50px;
+        border-radius: 999px;
+        padding: 0 18px;
+        font: inherit;
+        font-weight: 700;
         text-decoration: none;
-        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .primary-action {
+        border: 0;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 16px 30px rgba(217, 108, 61, 0.22);
+      }
+
+      .secondary-action {
+        background: white;
+        color: var(--accent-strong);
+        border: 1px solid var(--line);
+      }
+
+      @media (max-width: 920px) {
+        .hero-grid,
+        .workspace-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 14px;
+        }
+
+        .shell {
+          padding: 18px;
+        }
+
+        .topbar,
+        .action-row,
+        .tabs {
+          flex-direction: column;
+          align-items: stretch;
+        }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>1과</h1>
-      <p>이 페이지는 c1 학습 내용이 들어갈 자리입니다.</p>
-      <p><a href="../index.html">메인으로 돌아가기</a></p>
-    </main>
+    <div class="shell">
+      <div class="topbar">
+        <div class="eyebrow">Lesson 1</div>
+        <a href="../index.html">메인으로 돌아가기</a>
+      </div>
+
+      <h1>문장 구성 및 호응 연습</h1>
+      <p class="intro">
+        리소스 초안에 있던 서술어 논항 선택과 상징어 호응 연습을
+        브라우저에서 바로 쓸 수 있는 정적 학습 화면으로 옮겼습니다.
+        대상을 고르고, 단어를 채우고, 문장이 자연스러운지 확인해 보세요.
+      </p>
+
+      <section class="hero-grid">
+        <article class="hero-card">
+          <strong>이 과에서 연습하는 것</strong>
+          <ul>
+            <li>서술어가 요구하는 주어, 목적어, 필수 부사어의 호응</li>
+            <li>상징어와 어울리는 주어·서술어의 자연스러운 연결</li>
+            <li>문장을 직접 완성하면서 익히는 한국어 감각</li>
+          </ul>
+        </article>
+        <article class="stats-card">
+          <strong>현재 구성</strong>
+          <div class="stats-grid">
+            <div class="stat">
+              <span>서술어 항목</span>
+              <strong>4개</strong>
+            </div>
+            <div class="stat">
+              <span>상징어 항목</span>
+              <strong>4개</strong>
+            </div>
+            <div class="stat">
+              <span>연습 유형</span>
+              <strong>2가지</strong>
+            </div>
+            <div class="stat">
+              <span>학습 방식</span>
+              <strong>선택형</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div class="tabs">
+        <button class="tab-button active" data-tab="verbs">서술어 중심 연습</button>
+        <button class="tab-button" data-tab="vocabs">상징어·어휘 호응 연습</button>
+      </div>
+
+      <section class="workspace">
+        <div class="workspace-grid">
+          <aside class="panel">
+            <h2>대상 선택</h2>
+            <div class="item-list" id="item-list"></div>
+          </aside>
+
+          <div class="panel">
+            <div class="sentence-box">
+              <h3 id="item-title"></h3>
+              <p class="meaning" id="item-meaning"></p>
+              <div class="sentence-preview" id="sentence-preview"></div>
+            </div>
+
+            <div class="choice-groups" id="choice-groups"></div>
+
+            <div class="result-box" id="result-box"></div>
+
+            <div class="action-row">
+              <button class="primary-action" id="check-button">문장 확인하기</button>
+              <button class="secondary-action" id="reset-button">다시 고르기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const verbData = [
+        {
+          id: "v1",
+          title: "닮다",
+          meaning: "어떤 사물이나 사람의 모양, 성격 따위가 비슷하다.",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "arg", index: 1 },
+            { type: "text", text: "닮다" },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["현상", "자녀", "외모", "정책", "성격"],
+              valid: ["자녀", "외모", "성격"],
+            },
+            {
+              role: "필수 부사어",
+              particle: "와/과",
+              options: ["부모님", "가치관", "아버지", "발전", "친구"],
+              valid: ["부모님", "아버지", "친구"],
+            },
+          ],
+        },
+        {
+          id: "v2",
+          title: "참가하다",
+          meaning: "모임이나 단체, 일 따위에 관계하여 들어가다.",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "arg", index: 1 },
+            { type: "text", text: "참가하다" },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["전문가", "가치관", "선수단", "규칙", "시민들"],
+              valid: ["전문가", "선수단", "시민들"],
+            },
+            {
+              role: "필수 부사어",
+              particle: "에",
+              options: ["국제대회", "해결책", "토론회", "문제점", "캠페인"],
+              valid: ["국제대회", "토론회", "캠페인"],
+            },
+          ],
+        },
+        {
+          id: "v3",
+          title: "여기다",
+          meaning: "마음속으로 그러하다고 인정하거나 생각하다.",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "arg", index: 1 },
+            { type: "arg", index: 2 },
+            { type: "text", text: "여기다" },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "은/는",
+              options: ["정부", "자연", "전문가들", "갈등", "우리"],
+              valid: ["정부", "전문가들", "우리"],
+            },
+            {
+              role: "목적어",
+              particle: "을/를",
+              options: ["실패", "과일", "이번 위기", "제도", "환경문제"],
+              valid: ["실패", "이번 위기", "환경문제"],
+            },
+            {
+              role: "필수 부사어",
+              particle: "(으)로",
+              options: ["무의미", "새로운 기회", "원인", "불가피", "도약의 발판"],
+              valid: ["새로운 기회", "원인", "도약의 발판"],
+            },
+          ],
+        },
+        {
+          id: "v4",
+          title: "주다",
+          meaning: "어떤 영향을 미치거나 남에게 건네어 가지게 하다.",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "arg", index: 1 },
+            { type: "arg", index: 2 },
+            { type: "text", text: "주다" },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["책상", "정부 정책", "자원봉사자", "하늘", "긍정적 변화"],
+              valid: ["정부 정책", "자원봉사자", "긍정적 변화"],
+            },
+            {
+              role: "필수 부사어",
+              particle: "에게/에",
+              options: ["소외계층", "기억", "사회 전체", "목적", "피해자"],
+              valid: ["소외계층", "사회 전체", "피해자"],
+            },
+            {
+              role: "목적어",
+              particle: "을/를",
+              options: ["큰 도움", "감정", "실질적 혜택", "걸음", "악영향"],
+              valid: ["큰 도움", "실질적 혜택", "악영향"],
+            },
+          ],
+        },
+      ];
+
+      const vocabData = [
+        {
+          id: "voc1",
+          title: "반짝반짝",
+          meaning: "작은 빛이 잠깐 잇따라 나타났다가 사라지는 모양",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "text", text: "반짝반짝" },
+            { type: "arg", index: 1 },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["밤하늘의 별", "나무", "보석", "책상", "아이의 눈망울"],
+              valid: ["밤하늘의 별", "보석", "아이의 눈망울"],
+            },
+            {
+              role: "서술어",
+              particle: "",
+              options: ["뛰다", "빛나다", "자라다", "소리치다", "어둡다"],
+              valid: ["빛나다"],
+            },
+          ],
+        },
+        {
+          id: "voc2",
+          title: "두근두근",
+          meaning: "몹시 놀라거나 불안하여 가슴이 자꾸 뛰는 소리나 모양",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "text", text: "두근두근" },
+            { type: "arg", index: 1 },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["심장", "발걸음", "가슴", "머리", "마음"],
+              valid: ["심장", "가슴", "마음"],
+            },
+            {
+              role: "서술어",
+              particle: "",
+              options: ["뛰다", "빛나다", "거리다", "자라다", "아프다"],
+              valid: ["뛰다", "거리다"],
+            },
+          ],
+        },
+        {
+          id: "voc3",
+          title: "무럭무럭",
+          meaning: "아이들이나 동식물이 잘 자라는 모양",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "text", text: "무럭무럭" },
+            { type: "arg", index: 1 },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["아이", "생각", "나무", "건물", "새싹"],
+              valid: ["아이", "나무", "새싹"],
+            },
+            {
+              role: "서술어",
+              particle: "",
+              options: ["크다", "빛나다", "자라다", "소리치다", "뛰다"],
+              valid: ["크다", "자라다"],
+            },
+          ],
+        },
+        {
+          id: "voc4",
+          title: "고래고래",
+          meaning: "매우 크고 높은 목소리로 잇따라 소리를 지르는 모양",
+          format: [
+            { type: "arg", index: 0 },
+            { type: "text", text: "고래고래" },
+            { type: "arg", index: 1 },
+          ],
+          structure: [
+            {
+              role: "주어",
+              particle: "이/가",
+              options: ["제도", "취객", "군중", "구름", "화가 난 사람"],
+              valid: ["취객", "군중", "화가 난 사람"],
+            },
+            {
+              role: "서술어",
+              particle: "",
+              options: ["소리치다", "속삭이다", "소리지르다", "부르다", "울다"],
+              valid: ["소리치다", "소리지르다"],
+            },
+          ],
+        },
+      ];
+
+      const datasets = { verbs: verbData, vocabs: vocabData };
+      let activeTab = "verbs";
+      let selectedId = datasets[activeTab][0].id;
+      let answers = {};
+      let results = null;
+
+      const itemList = document.getElementById("item-list");
+      const itemTitle = document.getElementById("item-title");
+      const itemMeaning = document.getElementById("item-meaning");
+      const sentencePreview = document.getElementById("sentence-preview");
+      const choiceGroups = document.getElementById("choice-groups");
+      const resultBox = document.getElementById("result-box");
+      const checkButton = document.getElementById("check-button");
+      const resetButton = document.getElementById("reset-button");
+      const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
+
+      function currentItem() {
+        return datasets[activeTab].find((item) => item.id === selectedId);
+      }
+
+      function resetState() {
+        answers = {};
+        results = null;
+      }
+
+      function setTab(tab) {
+        activeTab = tab;
+        selectedId = datasets[activeTab][0].id;
+        resetState();
+        render();
+      }
+
+      function setItem(id) {
+        selectedId = id;
+        resetState();
+        render();
+      }
+
+      function setAnswer(index, option) {
+        answers[index] = option;
+        results = null;
+        render();
+      }
+
+      function checkAnswers() {
+        const item = currentItem();
+        const nextResults = {};
+        let allCorrect = true;
+
+        item.structure.forEach((arg, index) => {
+          const value = answers[index];
+          if (!value) {
+            nextResults[index] = "empty";
+            allCorrect = false;
+          } else if (arg.valid.includes(value)) {
+            nextResults[index] = "correct";
+          } else {
+            nextResults[index] = "incorrect";
+            allCorrect = false;
+          }
+        });
+
+        results = nextResults;
+        resultBox.className =
+          "result-box show " + (allCorrect ? "success" : "fail");
+        resultBox.textContent = allCorrect
+          ? "완벽합니다. 모든 논항과 호응이 자연스럽게 연결되었습니다."
+          : "어색한 선택이 있습니다. 표시된 항목을 다시 골라 보세요.";
+        render();
+      }
+
+      function renderList() {
+        itemList.innerHTML = "";
+
+        datasets[activeTab].forEach((item) => {
+          const button = document.createElement("button");
+          button.className =
+            "item-button" + (item.id === selectedId ? " active" : "");
+          button.type = "button";
+          button.innerHTML =
+            "<strong>" +
+            item.title +
+            "</strong><span>" +
+            item.meaning +
+            "</span>";
+          button.addEventListener("click", () => setItem(item.id));
+          itemList.appendChild(button);
+        });
+      }
+
+      function renderSentence() {
+        const item = currentItem();
+        itemTitle.textContent = item.title;
+        itemMeaning.textContent = item.meaning;
+        sentencePreview.innerHTML = "";
+
+        item.format.forEach((part) => {
+          if (part.type === "text") {
+            const predicate = document.createElement("div");
+            predicate.className = "predicate";
+            predicate.textContent = part.text;
+            sentencePreview.appendChild(predicate);
+            return;
+          }
+
+          const arg = item.structure[part.index];
+          const slot = document.createElement("div");
+          slot.className = "slot";
+
+          const label = document.createElement("div");
+          label.className = "slot-label";
+          label.textContent = arg.role;
+          slot.appendChild(label);
+
+          const value = document.createElement("div");
+          const resultClass = results && results[part.index]
+            ? " " + results[part.index]
+            : "";
+          value.className = "slot-value" + resultClass;
+          value.textContent = answers[part.index] || "(선택)";
+          slot.appendChild(value);
+          sentencePreview.appendChild(slot);
+
+          if (arg.particle) {
+            const particle = document.createElement("div");
+            particle.className = "particle";
+            particle.textContent = arg.particle;
+            sentencePreview.appendChild(particle);
+          }
+        });
+      }
+
+      function renderChoices() {
+        const item = currentItem();
+        choiceGroups.innerHTML = "";
+
+        item.structure.forEach((arg, index) => {
+          const group = document.createElement("section");
+          group.className = "choice-group";
+
+          const title = document.createElement("h4");
+          title.textContent = arg.role + "에 들어갈 말을 고르세요";
+          group.appendChild(title);
+
+          const row = document.createElement("div");
+          row.className = "choice-row";
+
+          arg.options.forEach((option) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className =
+              "choice-button" + (answers[index] === option ? " selected" : "");
+            button.textContent = option;
+            button.addEventListener("click", () => setAnswer(index, option));
+            row.appendChild(button);
+          });
+
+          group.appendChild(row);
+          choiceGroups.appendChild(group);
+        });
+      }
+
+      function renderTabs() {
+        tabButtons.forEach((button) => {
+          button.classList.toggle("active", button.dataset.tab === activeTab);
+        });
+      }
+
+      function render() {
+        renderTabs();
+        renderList();
+        renderSentence();
+        renderChoices();
+
+        if (!results) {
+          resultBox.className = "result-box";
+          resultBox.textContent = "";
+        }
+      }
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => setTab(button.dataset.tab));
+      });
+
+      checkButton.addEventListener("click", checkAnswers);
+      resetButton.addEventListener("click", () => {
+        resetState();
+        render();
+      });
+
+      render();
+    </script>
   </body>
 </html>

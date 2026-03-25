@@ -20,6 +20,9 @@
         --accent: #d96c3d;
         --accent-soft: #ffe2d3;
         --line-soft: rgba(31, 26, 23, 0.08);
+        --panel: rgba(255, 255, 255, 0.92);
+        --navy: #203247;
+        --navy-soft: #edf4fb;
       }
 
       * {
@@ -29,8 +32,6 @@
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
         padding: 24px;
         font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
           sans-serif;
@@ -41,14 +42,25 @@
       }
 
       main {
-        width: min(680px, 100%);
+        width: min(1120px, 100%);
+        margin: 0 auto;
         padding: 52px 36px;
         border-radius: 30px;
         background: var(--card-bg);
         border: 1px solid var(--line-soft);
         box-shadow: 0 20px 60px rgba(70, 45, 28, 0.12);
-        text-align: center;
         backdrop-filter: blur(14px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 28px;
+        align-items: center;
+      }
+
+      .hero-copy {
+        text-align: left;
       }
 
       .eyebrow {
@@ -70,11 +82,11 @@
         font-weight: 800;
         letter-spacing: -0.05em;
         line-height: 1.02;
+        text-align: left;
       }
 
       p {
-        margin: 0 auto;
-        max-width: 34rem;
+        margin: 0;
         font-size: 1.05rem;
         font-weight: 400;
         line-height: 1.75;
@@ -82,11 +94,151 @@
         color: var(--text-muted);
       }
 
+      .hero-copy p {
+        max-width: 38rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .primary-link,
+      .secondary-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+        padding: 0 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .primary-link {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 16px 30px rgba(217, 108, 61, 0.25);
+      }
+
+      .secondary-link {
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--navy);
+        border: 1px solid var(--line-soft);
+      }
+
+      .hero-preview {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), #fff7f1);
+        border: 1px solid var(--line-soft);
+        border-radius: 28px;
+        padding: 24px;
+        box-shadow: 0 18px 40px rgba(32, 50, 71, 0.08);
+      }
+
+      .preview-label {
+        display: inline-flex;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: var(--navy-soft);
+        color: var(--navy);
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .preview-card {
+        margin-top: 16px;
+        border-radius: 22px;
+        background: white;
+        border: 1px solid var(--line-soft);
+        padding: 18px;
+      }
+
+      .preview-card h2 {
+        margin: 0 0 8px;
+        font-size: 1.25rem;
+        letter-spacing: -0.03em;
+      }
+
+      .preview-sentence {
+        margin-top: 14px;
+        padding: 16px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid #e5edf5;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.8;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .chip {
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: white;
+        border: 1px solid #d8e1eb;
+        color: #4b5968;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .info-card {
+        padding: 22px;
+        border-radius: 24px;
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        box-shadow: 0 14px 30px rgba(70, 45, 28, 0.06);
+      }
+
+      .info-card strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--navy);
+        font-size: 1rem;
+      }
+
+      .section {
+        margin-top: 28px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      .section-header h2 {
+        margin: 0;
+        font-size: 1.55rem;
+        letter-spacing: -0.04em;
+      }
+
+      .section-header p {
+        max-width: 32rem;
+      }
+
       .lesson-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
-        margin-top: 36px;
       }
 
       .lesson-link {
@@ -124,12 +276,103 @@
         letter-spacing: -0.02em;
       }
 
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .module-card {
+        padding: 22px;
+        border-radius: 26px;
+        background: white;
+        border: 1px solid var(--line-soft);
+        box-shadow: 0 14px 30px rgba(32, 50, 71, 0.08);
+      }
+
+      .module-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+
+      .module-meta {
+        display: inline-flex;
+        margin-bottom: 12px;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background: #f4f6f8;
+        color: #5f6b77;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .flow-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .flow-step {
+        padding: 20px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), #fff7f0);
+        border: 1px solid var(--line-soft);
+      }
+
+      .flow-step span {
+        display: inline-block;
+        margin-bottom: 10px;
+        color: var(--accent);
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .flow-step strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.08rem;
+      }
+
       @media (max-width: 640px) {
         main {
           padding: 42px 22px;
         }
 
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy,
+        h1 {
+          text-align: center;
+        }
+
+        .hero-copy p,
+        .section-header p {
+          max-width: none;
+        }
+
+        .hero-actions,
+        .section-header {
+          justify-content: center;
+        }
+
+        .info-grid,
+        .module-grid,
+        .flow-grid,
         .lesson-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 920px) {
+        .hero,
+        .info-grid,
+        .lesson-grid,
+        .module-grid,
+        .flow-grid {
           grid-template-columns: 1fr;
         }
       }
@@ -137,30 +380,139 @@
   </head>
   <body>
     <main>
-      <div class="eyebrow">Korean Learning</div>
-      <h1>환영합니다</h1>
-      <p>
-        이곳은 한국어를 쉽고 즐겁게 배우기 위한 학습 페이지입니다.
-        천천히 읽고, 따라 쓰고, 자주 말하면서 한국어와 더 가까워져 보세요.
-      </p>
-      <div class="lesson-grid">
-        <a class="lesson-link" href="c1/">
-          <span class="lesson-number">1과</span>
-          <span class="lesson-name">c1</span>
-        </a>
-        <a class="lesson-link" href="c2/">
-          <span class="lesson-number">2과</span>
-          <span class="lesson-name">c2</span>
-        </a>
-        <a class="lesson-link" href="c3/">
-          <span class="lesson-number">3과</span>
-          <span class="lesson-name">c3</span>
-        </a>
-        <a class="lesson-link" href="c4/">
-          <span class="lesson-number">4과</span>
-          <span class="lesson-name">c4</span>
-        </a>
-      </div>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Korean Learning Lab</div>
+          <h1>문장을 고르고, 맞추고, 한국어 감각을 키워 보세요.</h1>
+          <p>
+            이 홈페이지는 단순 암기가 아니라 문장 구성과 호응을 직접 고르면서
+            익히는 한국어 학습 페이지입니다. 리소스 초안의 핵심 연습인
+            서술어 논항 선택, 상징어 호응, 문장 완성 방식을 메인 화면에 맞게
+            정리했습니다.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="c1/">1과부터 시작하기</a>
+            <a class="secondary-link" href="#modules">연습 방식 보기</a>
+          </div>
+        </div>
+        <div class="hero-preview">
+          <div class="preview-label">문장 완성 미리보기</div>
+          <div class="preview-card">
+            <h2>서술어 중심 연습</h2>
+            <p>논항을 맞게 넣어 자연스러운 한국어 문장을 완성합니다.</p>
+            <div class="preview-sentence">
+              전문가들이 이번 위기를 <strong>새로운 기회</strong>로 여기다
+            </div>
+            <div class="chip-row">
+              <span class="chip">주어: 전문가들</span>
+              <span class="chip">목적어: 이번 위기</span>
+              <span class="chip">부사어: 새로운 기회</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-grid section">
+        <article class="info-card">
+          <strong>논항 감각 익히기</strong>
+          <p>서술어가 무엇을 필요로 하는지, 어떤 조사와 함께 자연스러운지 몸으로 익힙니다.</p>
+        </article>
+        <article class="info-card">
+          <strong>어휘 호응 훈련</strong>
+          <p>반짝반짝, 두근두근 같은 표현이 어떤 주어와 잘 어울리는지 감각적으로 연습합니다.</p>
+        </article>
+        <article class="info-card">
+          <strong>직접 선택하는 학습</strong>
+          <p>보기 중에서 고르며 틀린 이유를 눈으로 확인하는 방식이라 혼자 공부하기에도 편합니다.</p>
+        </article>
+      </section>
+
+      <section class="section" id="modules">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Practice Types</div>
+            <h2>홈페이지에 담은 핵심 연습</h2>
+          </div>
+          <p>리소스 폴더의 학습 초안을 바탕으로, 방문자가 첫 화면에서 바로 이해할 수 있게 두 가지 대표 모듈로 정리했습니다.</p>
+        </div>
+        <div class="module-grid">
+          <article class="module-card">
+            <div class="module-meta">서술어 중심 연습</div>
+            <h3>닮다, 참가하다, 여기다, 주다</h3>
+            <p>주어, 목적어, 필수 부사어를 고르며 문장 구조와 조사 호응을 함께 연습합니다.</p>
+            <div class="chip-row">
+              <span class="chip">예시: 닮다</span>
+              <span class="chip">예시: 참가하다</span>
+              <span class="chip">예시: 여기다</span>
+            </div>
+          </article>
+          <article class="module-card">
+            <div class="module-meta">상징어·어휘 호응 연습</div>
+            <h3>반짝반짝, 두근두근, 무럭무럭, 고래고래</h3>
+            <p>표현의 뉘앙스에 맞는 주어와 서술어를 고르며 자연스러운 연결을 훈련합니다.</p>
+            <div class="chip-row">
+              <span class="chip">예시: 반짝반짝</span>
+              <span class="chip">예시: 두근두근</span>
+              <span class="chip">예시: 무럭무럭</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Lesson Entry</div>
+            <h2>과별로 바로 들어가기</h2>
+          </div>
+          <p>각 과는 앞으로 개별 하위 폴더에서 관리됩니다. 원하는 과를 눌러 세부 학습 화면으로 이동하세요.</p>
+        </div>
+        <div class="lesson-grid">
+          <a class="lesson-link" href="c1/">
+            <span class="lesson-number">1과</span>
+            <span class="lesson-name">c1</span>
+          </a>
+          <a class="lesson-link" href="c2/">
+            <span class="lesson-number">2과</span>
+            <span class="lesson-name">c2</span>
+          </a>
+          <a class="lesson-link" href="c3/">
+            <span class="lesson-number">3과</span>
+            <span class="lesson-name">c3</span>
+          </a>
+          <a class="lesson-link" href="c4/">
+            <span class="lesson-number">4과</span>
+            <span class="lesson-name">c4</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">How It Works</div>
+            <h2>학습 흐름</h2>
+          </div>
+          <p>리소스 초안의 인터랙티브 구조를 홈페이지 설명에 맞게 간단한 세 단계로 정리했습니다.</p>
+        </div>
+        <div class="flow-grid">
+          <article class="flow-step">
+            <span>STEP 1</span>
+            <strong>대상 선택</strong>
+            <p>학습할 서술어나 상징어를 고르고 의미를 먼저 확인합니다.</p>
+          </article>
+          <article class="flow-step">
+            <span>STEP 2</span>
+            <strong>논항 후보 선택</strong>
+            <p>주어, 목적어, 부사어 같은 자리에 들어갈 말을 직접 선택합니다.</p>
+          </article>
+          <article class="flow-step">
+            <span>STEP 3</span>
+            <strong>문장 확인</strong>
+            <p>완성된 문장을 보고 어색한 연결인지 자연스러운 연결인지 점검합니다.</p>
+          </article>
+        </div>
+      </section>
     </main>
   </body>
 </html>
