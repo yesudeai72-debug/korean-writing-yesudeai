@@ -946,7 +946,10 @@ const LEVEL_DATA = {
 
 function choiceButton(label, classes, dataset, detail = "") {
   const attrs = Object.entries(dataset)
-    .map(([key, value]) => `data-${key}="${String(value)}"`)
+    .map(([key, value]) => {
+      const attr = key.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+      return `data-${attr}="${String(value)}"`;
+    })
     .join(" ");
   return `
     <button type="button" class="${classes}" ${attrs}>
