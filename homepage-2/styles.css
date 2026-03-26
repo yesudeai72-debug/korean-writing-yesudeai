@@ -186,6 +186,12 @@ h1 {
   gap: 14px;
 }
 
+.choice-columns {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
 .panel {
   padding: 18px 16px;
 }
@@ -202,7 +208,8 @@ h1 {
   line-height: 1.6;
 }
 
-.sentence-board {
+.sentence-board,
+.construction-board {
   margin-top: 14px;
   padding: 16px;
   border-radius: 22px;
@@ -210,7 +217,8 @@ h1 {
   border: 1px solid var(--line);
 }
 
-.sentence-line {
+.sentence-line,
+.construction-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -218,7 +226,8 @@ h1 {
 }
 
 .slot,
-.predicate-box {
+.predicate-box,
+.answer-slot {
   min-height: 52px;
   padding: 12px 14px;
   border-radius: 18px;
@@ -249,6 +258,88 @@ h1 {
   box-shadow: 0 14px 26px rgba(204, 99, 56, 0.22);
 }
 
+.predicate-box.fixed {
+  animation: beaconFloat 2.2s ease-in-out infinite;
+}
+
+.answer-slot {
+  min-width: 110px;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  border: 2px dashed #d7c0aa;
+  background: rgba(255, 252, 247, 0.96);
+  color: var(--text);
+  font: inherit;
+}
+
+.answer-slot.active {
+  border-color: #efb896;
+  background: #fff0e4;
+  box-shadow: 0 12px 26px rgba(204, 99, 56, 0.12);
+}
+
+.answer-role {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-particle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.answer-text {
+  font-weight: 700;
+}
+
+.live-sentence {
+  margin-top: 14px;
+  color: var(--focus);
+  line-height: 1.7;
+  font-weight: 700;
+}
+
+.feedback {
+  margin-top: 12px;
+  color: #99421d;
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
+.feedback.success {
+  color: #245b3c;
+}
+
+.sample-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sample-chip {
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff0e3, #fff9f3);
+  border: 1px solid #efb896;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(204, 99, 56, 0.12);
+  animation: chipEnter 520ms ease forwards, beaconFloat 2.6s ease-in-out infinite;
+}
+
 .candidate-grid {
   display: grid;
   gap: 10px;
@@ -263,7 +354,8 @@ h1 {
 }
 
 .predicate-button,
-.arg-chip {
+.arg-chip,
+.particle-chip {
   appearance: none;
   border: 1px solid var(--line);
   background: var(--chip);
@@ -295,7 +387,8 @@ h1 {
   box-shadow: 0 10px 22px rgba(204, 99, 56, 0.12);
 }
 
-.arg-chip {
+.arg-chip,
+.particle-chip {
   position: relative;
   font-weight: 700;
   opacity: 0;
@@ -303,7 +396,8 @@ h1 {
   animation: chipEnter 480ms ease forwards;
 }
 
-.arg-chip::after {
+.arg-chip::after,
+.particle-chip::after {
   content: "";
   position: absolute;
   inset: -4px;
@@ -318,6 +412,20 @@ h1 {
   color: var(--muted);
   font-size: 0.74rem;
   font-weight: 600;
+}
+
+.arg-chip.muted {
+  opacity: 0.55;
+}
+
+.arg-chip.danger {
+  border-color: #efc2b1;
+  background: #fff5f1;
+}
+
+.particle-chip.active {
+  border-color: #efb896;
+  background: #fff0e4;
 }
 
 .hint-list {
@@ -347,6 +455,17 @@ h1 {
   }
 }
 
+@keyframes beaconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
 @keyframes pulseRing {
   0% {
     opacity: 0.7;
@@ -370,5 +489,9 @@ h1 {
 
   .stack {
     grid-template-columns: 1.05fr 0.95fr;
+  }
+
+  .choice-columns {
+    grid-template-columns: 0.9fr 1.1fr;
   }
 }
