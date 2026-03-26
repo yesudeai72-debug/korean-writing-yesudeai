@@ -87,6 +87,7 @@
 
       .workspace,
       .panel,
+      .sample-box,
       .result-box {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -98,6 +99,59 @@
         display: flex;
         gap: 10px;
         margin: 14px 0 12px;
+      }
+
+      .sample-box {
+        margin-top: 14px;
+        padding: 14px;
+      }
+
+      .sample-box h2 {
+        margin: 0 0 10px;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+
+      .sample-flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 12px;
+        align-items: end;
+      }
+
+      .sample-slot {
+        min-width: 92px;
+      }
+
+      .sample-slot-label {
+        display: inline-flex;
+        margin-bottom: 6px;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 0.7rem;
+        font-weight: 800;
+      }
+
+      .sample-slot-value {
+        min-height: 38px;
+        padding: 7px 0;
+        border-bottom: 2px solid #d4dde7;
+        color: #9aa7b3;
+        font-weight: 700;
+      }
+
+      .sample-slot-value.filled {
+        color: var(--accent-strong);
+        border-color: rgba(32, 50, 71, 0.34);
+      }
+
+      .sample-particle,
+      .sample-predicate {
+        padding-bottom: 7px;
+        font-weight: 700;
+        color: var(--accent-strong);
       }
 
       .tab-button {
@@ -466,6 +520,28 @@
 
       <h1>문장 구성 및 호응 연습</h1>
 
+      <section class="sample-box">
+        <h2>맛보기 문제</h2>
+        <div class="sample-flow">
+          <div class="sample-slot">
+            <div class="sample-slot-label">주어</div>
+            <div class="sample-slot-value" data-sample-slot="0">(선택)</div>
+          </div>
+          <div class="sample-particle">은/는</div>
+          <div class="sample-slot">
+            <div class="sample-slot-label">목적어</div>
+            <div class="sample-slot-value" data-sample-slot="1">(선택)</div>
+          </div>
+          <div class="sample-particle">을/를</div>
+          <div class="sample-slot">
+            <div class="sample-slot-label">필수 부사어</div>
+            <div class="sample-slot-value" data-sample-slot="2">(선택)</div>
+          </div>
+          <div class="sample-particle">(으)로</div>
+          <div class="sample-predicate">여기다</div>
+        </div>
+      </section>
+
       <div class="tabs">
         <button class="tab-button active" data-tab="verbs">서술어 중심 연습</button>
         <button class="tab-button" data-tab="vocabs">상징어·어휘 호응 연습</button>
@@ -726,6 +802,22 @@
       const checkButton = document.getElementById("check-button");
       const resetButton = document.getElementById("reset-button");
       const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
+      const sampleSlots = Array.from(document.querySelectorAll("[data-sample-slot]"));
+
+      function playSample() {
+        const sampleWords = ["전문가들", "이번 위기", "새로운 기회"];
+        sampleSlots.forEach((slot) => {
+          slot.textContent = "(선택)";
+          slot.classList.remove("filled");
+        });
+        sampleWords.forEach((word, index) => {
+          window.setTimeout(() => {
+            if (!sampleSlots[index]) return;
+            sampleSlots[index].textContent = word;
+            sampleSlots[index].classList.add("filled");
+          }, 500 * (index + 1));
+        });
+      }
 
       function currentItem() {
         return datasets[activeTab].find((item) => item.id === selectedId);
@@ -979,6 +1071,8 @@
       });
 
       render();
+      playSample();
+      window.setInterval(playSample, 3600);
     </script>
   </body>
 </html>

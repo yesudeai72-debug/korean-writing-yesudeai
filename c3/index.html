@@ -98,6 +98,7 @@
 
       .hero-card,
       .preview-card,
+      .sample-card,
       .menu-card,
       .idea-card {
         background: var(--panel);
@@ -109,6 +110,33 @@
       .hero-card,
       .preview-card {
         padding: 24px;
+      }
+
+      .sample-card {
+        padding: 18px 20px;
+      }
+
+      .sample-card strong {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--navy);
+      }
+
+      .sample-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 10px;
+        align-items: end;
+      }
+
+      .sample-chip {
+        display: inline-flex;
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: white;
+        border: 1px solid #dde7ef;
+        color: var(--navy);
+        font-weight: 700;
       }
 
       .hero-card strong,
@@ -318,6 +346,16 @@
         가능한 어휘 산성비 게임을 구축해 두었고, `듣기`, `읽기`, `쓰기`는
         같은 학습 톤으로 확장할 수 있도록 준비했습니다.
       </p>
+
+      <section class="sample-card section">
+        <strong>맛보기 문제</strong>
+        <div class="sample-line">
+          <span class="sample-chip">밤하늘의 별</span>
+          <span class="sample-chip">이</span>
+          <span class="sample-chip">반짝반짝</span>
+          <span class="sample-chip">빛나다</span>
+        </div>
+      </section>
 
       <section class="hero-grid">
         <article class="hero-card">

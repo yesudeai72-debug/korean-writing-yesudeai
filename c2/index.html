@@ -80,6 +80,37 @@
         font-weight: 600;
       }
 
+      .sample-box {
+        margin: 18px 0 0;
+        padding: 14px;
+        border-radius: 20px;
+        background: #f8fafc;
+        border: 1px solid rgba(31, 26, 23, 0.08);
+      }
+
+      .sample-box strong {
+        display: block;
+        margin-bottom: 10px;
+        color: #203247;
+      }
+
+      .sample-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 10px;
+        align-items: end;
+      }
+
+      .sample-chip {
+        display: inline-flex;
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: white;
+        border: 1px solid #dbe5ee;
+        color: #203247;
+        font-weight: 700;
+      }
+
       .focus-link {
         position: relative;
         display: inline-flex;
@@ -115,6 +146,16 @@
     <main>
       <h1>2과</h1>
       <p>이 페이지는 c2 학습 내용이 들어갈 자리입니다.</p>
+      <div class="sample-box">
+        <strong>맛보기 문제</strong>
+        <div class="sample-line">
+          <span class="sample-chip">자녀</span>
+          <span class="sample-chip">가</span>
+          <span class="sample-chip">부모님</span>
+          <span class="sample-chip">과</span>
+          <span class="sample-chip">닮다</span>
+        </div>
+      </div>
       <p><a class="focus-link" href="../index.html">다른 학습으로 이동하기</a></p>
     </main>
   </body>
