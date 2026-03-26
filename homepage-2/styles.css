@@ -271,12 +271,33 @@ h1 {
   background: rgba(255, 252, 247, 0.96);
   color: var(--text);
   font: inherit;
+  position: relative;
+  overflow: hidden;
 }
 
 .answer-slot.active {
   border-color: #efb896;
   background: #fff0e4;
   box-shadow: 0 12px 26px rgba(204, 99, 56, 0.12);
+}
+
+.answer-slot.filled {
+  border-style: solid;
+  border-color: #efb896;
+  background: linear-gradient(135deg, #fff0e3, #fff8f0);
+}
+
+.answer-slot.burst {
+  animation: slotBurst 620ms cubic-bezier(0.2, 1, 0.22, 1);
+}
+
+.answer-slot.burst::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 230, 210, 0.7) 28%, rgba(255, 230, 210, 0) 62%);
+  animation: slotFlash 680ms ease-out;
+  pointer-events: none;
 }
 
 .answer-role {
@@ -463,6 +484,35 @@ h1 {
 
   50% {
     transform: translateY(-4px);
+  }
+}
+
+@keyframes slotBurst {
+  0% {
+    transform: scale(0.92);
+    box-shadow: 0 0 0 rgba(204, 99, 56, 0);
+  }
+
+  55% {
+    transform: scale(1.08);
+    box-shadow: 0 18px 34px rgba(204, 99, 56, 0.24);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 12px 24px rgba(204, 99, 56, 0.14);
+  }
+}
+
+@keyframes slotFlash {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.4);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
   }
 }
 

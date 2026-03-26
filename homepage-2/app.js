@@ -960,7 +960,8 @@ function getDefaultState(predicateInfo) {
   return {
     selectedArguments: Array.from({ length: predicateInfo.slots.length }, () => null),
     focusSlot: 0,
-    feedback: ""
+    feedback: "",
+    lastFilledSlot: null
   };
 }
 
@@ -984,13 +985,16 @@ function createSentenceSlots(predicateInfo, state, level) {
     .map((slot, index) => {
       const selectedArgument = state.selectedArguments[index];
       const particleLabel = level.hideParticlesInSlots ? "" : slot.particle || "";
+      const isCurrent = state.focusSlot === index;
+      const isFilled = Boolean(selectedArgument);
+      const isBurst = state.lastFilledSlot === index;
 
       return `
-        <button type="button" class="answer-slot${state.focusSlot === index ? " active" : ""}" data-slot-index="${index}">
+        <div class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}">
           <span class="answer-role">${slot.role}</span>
           <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
-          <span class="answer-text">${selectedArgument ? selectedArgument.text : ""}</span>
-        </button>
+          <span class="answer-text">${selectedArgument ? selectedArgument.text : " "}</span>
+        </div>
       `;
     })
     .join("");
@@ -1121,29 +1125,25 @@ function renderPage(levelKey) {
       });
     });
 
-    app.querySelectorAll("[data-slot-index]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.focusSlot = Number(button.dataset.slotIndex);
-        redraw();
-      });
-    });
-
     app.querySelectorAll("[data-arg-index]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = predicateInfo.arguments[Number(button.dataset.argIndex)];
-        const currentRole = predicateInfo.slots[state.focusSlot].role;
+        const openSlotIndex = getOpenSlotIndex(state, predicateInfo);
+        const currentRole = predicateInfo.slots[openSlotIndex].role;
 
         if (selected.role !== currentRole) {
           state.feedback = "지금 고르는 칸과 역할이 맞지 않습니다.";
+          state.lastFilledSlot = null;
           redraw();
           return;
         }
 
-        state.selectedArguments[state.focusSlot] = selected;
+        state.selectedArguments[openSlotIndex] = selected;
         state.feedback = isCompleted(predicateInfo, state, level)
           ? validateCurrentState(predicateInfo, state, level)
           : "다음 칸을 눌러 논항을 이어서 선택하세요.";
         state.focusSlot = getOpenSlotIndex(state, predicateInfo);
+        state.lastFilledSlot = openSlotIndex;
         redraw();
       });
     });
