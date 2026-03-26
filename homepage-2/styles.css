@@ -196,6 +196,27 @@ h1 {
   padding: 18px 16px;
 }
 
+.app-shell {
+  margin-top: 14px;
+  padding: 20px 18px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.app-shell-title {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.app-shell-text {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
 .panel h2 {
   font-size: 1.02rem;
   font-weight: 800;
