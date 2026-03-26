@@ -1,16 +1,3 @@
-const ROLE_PARTICLES = {
-  주어: ["이", "가"],
-  목적어: ["을", "를"],
-  대상: ["에게", "한테", "와", "과", "에"],
-  내용: ["을", "를"],
-  장소: ["에", "에서"],
-  도착점: ["에"],
-  출발점: ["에서"],
-  위치: ["에"],
-  보어: ["로", "으로"],
-  상태: ["이", "가"]
-};
-
 function arg(text, role, valid = true, note = "") {
   return { text, role, valid, note };
 }
@@ -24,9 +11,8 @@ const LEVEL_DATA = {
     title: "초급",
     subtitle:
       "기초 문장부터 시작해 서술어가 요구하는 논항 수와 조사를 함께 익힙니다.",
-    showParticleChoices: true,
     allowSemanticViolations: false,
-    advancedBlankParticleIndex: null,
+    hideParticlesInSlots: false,
     predicates: [
       predicate(
         "가다",
@@ -314,9 +300,8 @@ const LEVEL_DATA = {
     title: "중급",
     subtitle:
       "중급에서는 구조 연습과 함께 선택 제약 위반 후보도 구별해 보도록 설계했습니다.",
-    showParticleChoices: true,
     allowSemanticViolations: true,
-    advancedBlankParticleIndex: null,
+    hideParticlesInSlots: false,
     predicates: [
       predicate(
         "설명하다",
@@ -640,9 +625,8 @@ const LEVEL_DATA = {
     title: "고급",
     subtitle:
       "고급에서는 조사 단서를 일부 비워 두고, 선택 제약까지 고려해 엄밀하게 문장을 완성합니다.",
-    showParticleChoices: false,
     allowSemanticViolations: true,
-    advancedBlankParticleIndex: 0,
+    hideParticlesInSlots: true,
     predicates: [
       predicate(
         "간주하다",
@@ -975,7 +959,6 @@ function choiceButton(label, classes, dataset, detail = "") {
 function getDefaultState(predicateInfo) {
   return {
     selectedArguments: Array.from({ length: predicateInfo.slots.length }, () => null),
-    selectedParticles: predicateInfo.slots.map(() => null),
     focusSlot: 0,
     feedback: ""
   };
@@ -983,15 +966,7 @@ function getDefaultState(predicateInfo) {
 
 function getOpenSlotIndex(state, predicateInfo) {
   const missingArgument = state.selectedArguments.findIndex((value) => value === null);
-  if (missingArgument !== -1) {
-    return missingArgument;
-  }
-
-  const missingParticle = predicateInfo.slots.findIndex((slot, index) => {
-    return slot.particle && state.selectedParticles[index] === null;
-  });
-
-  return missingParticle === -1 ? 0 : missingParticle;
+  return missingArgument === -1 ? 0 : missingArgument;
 }
 
 function createSampleSentence(predicateInfo) {
@@ -1008,17 +983,13 @@ function createSentenceSlots(predicateInfo, state, level) {
   return predicateInfo.slots
     .map((slot, index) => {
       const selectedArgument = state.selectedArguments[index];
-      const particleVisible = !(
-        level.advancedBlankParticleIndex === index && !level.showParticleChoices
-      );
-      const particleLabel = slot.particle && particleVisible ? slot.particle : "";
-      const particleChoice = state.selectedParticles[index];
+      const particleLabel = level.hideParticlesInSlots ? "" : slot.particle || "";
 
       return `
         <button type="button" class="answer-slot${state.focusSlot === index ? " active" : ""}" data-slot-index="${index}">
           <span class="answer-role">${slot.role}</span>
-          <span class="answer-particle">${particleChoice || particleLabel || " "}</span>
-          <span class="answer-text">${selectedArgument ? selectedArgument.text : "논항 선택"}</span>
+          <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
+          <span class="answer-text">${selectedArgument ? selectedArgument.text : ""}</span>
         </button>
       `;
     })
@@ -1055,77 +1026,30 @@ function createArgumentButtons(predicateInfo, state) {
     .join("");
 }
 
-function createParticleButtons(predicateInfo, state, level) {
-  if (!level.showParticleChoices) {
-    return "";
-  }
-
-  const currentSlot = predicateInfo.slots[state.focusSlot];
-  const options = Array.from(new Set([...(ROLE_PARTICLES[currentSlot.role] || []), currentSlot.particle]));
-
-  return options
-    .map((particleOption, index) =>
-      choiceButton(
-        particleOption,
-        `particle-chip${state.selectedParticles[state.focusSlot] === particleOption ? " active" : ""}`,
-        { particleIndex: index, particleValue: particleOption },
-        currentSlot.role
-      )
-    )
-    .join("");
-}
-
 function buildSentenceText(predicateInfo, state, level) {
   return predicateInfo.slots
     .map((slot, index) => {
       const argumentInfo = state.selectedArguments[index];
-      const particle = state.selectedParticles[index] || "";
-      const particleVisible = !(
-        level.advancedBlankParticleIndex === index && !level.showParticleChoices
-      );
       if (!argumentInfo) {
         return `[${slot.role}]`;
       }
-      if (!particleVisible) {
+      if (level.hideParticlesInSlots) {
         return argumentInfo.text;
       }
-      return particle ? `${argumentInfo.text}${particle}` : `${argumentInfo.text}[조사]`;
+      return `${argumentInfo.text}${slot.particle || ""}`;
     })
     .concat(predicateInfo.word)
     .join(" ");
 }
 
 function isCompleted(predicateInfo, state, level) {
-  const allArgumentsFilled = state.selectedArguments.every(Boolean);
-  if (!allArgumentsFilled) {
-    return false;
-  }
-
-  if (!level.showParticleChoices) {
-    return true;
-  }
-
-  return predicateInfo.slots.every((slot, index) => {
-    if (!slot.particle) {
-      return true;
-    }
-    return Boolean(state.selectedParticles[index]);
-  });
+  return state.selectedArguments.every(Boolean);
 }
 
 function validateCurrentState(predicateInfo, state, level) {
   const invalidArgument = state.selectedArguments.find((item) => item && item.valid === false);
   if (invalidArgument) {
     return "선택 제약을 어긴 논항이 들어가 있어 한국어 문장이 자연스럽지 않습니다.";
-  }
-
-  if (level.showParticleChoices) {
-    const wrongParticle = predicateInfo.slots.find((slot, index) => {
-      return slot.particle && state.selectedParticles[index] && state.selectedParticles[index] !== slot.particle;
-    });
-    if (wrongParticle) {
-      return "조사 선택을 다시 확인해 주세요. 이 서술어는 정해진 논항과 조사 결합을 요구합니다.";
-    }
   }
 
   return "문장이 완성되었습니다.";
@@ -1182,20 +1106,9 @@ function renderPage(levelKey) {
           <div class="candidate-list">
             ${createArgumentButtons(predicateInfo, state)}
           </div>
-          ${
-            level.showParticleChoices
-              ? `
-            <h2 style="margin-top:18px">조사 후보</h2>
-            <div class="candidate-list particle-list">
-              ${createParticleButtons(predicateInfo, state, level)}
-            </div>
-          `
-              : `
-            <div class="hint-list" style="margin-top:18px">
-              <div class="hint-item"><strong>고급 규칙</strong> 한 칸은 조사 단서 없이 제시됩니다. 서술어와 의미 관계를 보고 판단해 보세요.</div>
-            </div>
-          `
-          }
+          <div class="hint-list" style="margin-top:18px">
+            <div class="hint-item"><strong>${level.hideParticlesInSlots ? "고급 규칙" : "초·중급 규칙"}</strong> ${level.hideParticlesInSlots ? "고급은 조사 없이 빈 칸이 주어집니다. 의미 관계를 보고 논항을 넣어 보세요." : "초급과 중급은 각 칸 안에 조사가 먼저 보입니다. 알맞은 논항을 눌러 문장을 채워 보세요."}</div>
+          </div>
         </section>
       </div>
     `;
@@ -1227,22 +1140,6 @@ function renderPage(levelKey) {
         }
 
         state.selectedArguments[state.focusSlot] = selected;
-        state.feedback = level.showParticleChoices
-          ? "이제 조사 후보도 골라 보세요."
-          : validateCurrentState(predicateInfo, state, level);
-        state.focusSlot = getOpenSlotIndex(state, predicateInfo);
-
-        if (isCompleted(predicateInfo, state, level)) {
-          state.feedback = validateCurrentState(predicateInfo, state, level);
-        }
-
-        redraw();
-      });
-    });
-
-    app.querySelectorAll("[data-particle-value]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.selectedParticles[state.focusSlot] = button.dataset.particleValue;
         state.feedback = isCompleted(predicateInfo, state, level)
           ? validateCurrentState(predicateInfo, state, level)
           : "다음 칸을 눌러 논항을 이어서 선택하세요.";
