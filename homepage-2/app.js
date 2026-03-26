@@ -961,7 +961,9 @@ function getDefaultState(predicateInfo) {
     selectedArguments: Array.from({ length: predicateInfo.slots.length }, () => null),
     focusSlot: 0,
     feedback: "",
-    lastFilledSlot: null
+    lastFilledSlot: null,
+    feedbackTone: "",
+    invalidSlot: null
   };
 }
 
@@ -988,9 +990,10 @@ function createSentenceSlots(predicateInfo, state, level) {
       const isCurrent = state.focusSlot === index;
       const isFilled = Boolean(selectedArgument);
       const isBurst = state.lastFilledSlot === index;
+      const isInvalid = state.invalidSlot === index;
 
       return `
-        <div class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}">
+        <div class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}${isInvalid ? " invalid" : ""}">
           <span class="answer-role">${slot.role}</span>
           <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
           <span class="answer-text">${selectedArgument ? selectedArgument.text : " "}</span>
@@ -1053,10 +1056,16 @@ function isCompleted(predicateInfo, state, level) {
 function validateCurrentState(predicateInfo, state, level) {
   const invalidArgument = state.selectedArguments.find((item) => item && item.valid === false);
   if (invalidArgument) {
-    return "선택 제약을 어긴 논항이 들어가 있어 한국어 문장이 자연스럽지 않습니다.";
+    return {
+      message: "선택 제약을 어긴 논항이 들어가 있어 한국어 문장이 자연스럽지 않습니다.",
+      tone: "error"
+    };
   }
 
-  return "문장이 완성되었습니다.";
+  return {
+    message: "문장이 완성되었습니다.",
+    tone: "success"
+  };
 }
 
 function renderPage(levelKey) {
@@ -1089,7 +1098,7 @@ function renderPage(levelKey) {
             <div class="predicate-box fixed">${predicateInfo.word}</div>
           </div>
           <p class="live-sentence">${sentenceText}</p>
-          ${state.feedback ? `<p class="feedback${completed && !state.feedback.includes("자연스럽지") && !state.feedback.includes("다시") ? " success" : ""}">${state.feedback}</p>` : ""}
+          ${state.feedback ? `<p class="feedback${state.feedbackTone === "success" ? " success" : ""}${state.feedbackTone === "error" ? " error" : ""}">${state.feedback}</p>` : ""}
         </div>
       </section>
       <section class="panel" style="margin-top:14px">
@@ -1133,15 +1142,23 @@ function renderPage(levelKey) {
 
         if (selected.role !== currentRole) {
           state.feedback = "지금 고르는 칸과 역할이 맞지 않습니다.";
+          state.feedbackTone = "error";
           state.lastFilledSlot = null;
+          state.invalidSlot = openSlotIndex;
           redraw();
           return;
         }
 
         state.selectedArguments[openSlotIndex] = selected;
-        state.feedback = isCompleted(predicateInfo, state, level)
-          ? validateCurrentState(predicateInfo, state, level)
-          : "다음 칸을 눌러 논항을 이어서 선택하세요.";
+        state.invalidSlot = selected.valid === false ? openSlotIndex : null;
+        if (isCompleted(predicateInfo, state, level)) {
+          const result = validateCurrentState(predicateInfo, state, level);
+          state.feedback = result.message;
+          state.feedbackTone = result.tone;
+        } else {
+          state.feedback = "다음 칸을 눌러 논항을 이어서 선택하세요.";
+          state.feedbackTone = "";
+        }
         state.focusSlot = getOpenSlotIndex(state, predicateInfo);
         state.lastFilledSlot = openSlotIndex;
         redraw();
