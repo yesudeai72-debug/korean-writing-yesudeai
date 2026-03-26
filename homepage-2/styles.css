@@ -364,25 +364,6 @@ h1 {
   animation: errorShake 420ms ease;
 }
 
-.sample-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.sample-chip {
-  opacity: 0;
-  transform: translateY(10px) scale(0.96);
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #fff0e3, #fff9f3);
-  border: 1px solid #efb896;
-  font-weight: 800;
-  box-shadow: 0 10px 24px rgba(204, 99, 56, 0.12);
-  animation: chipEnter 520ms ease forwards, beaconFloat 2.6s ease-in-out infinite;
-}
-
 .candidate-grid {
   display: grid;
   gap: 10px;

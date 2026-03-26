@@ -972,16 +972,6 @@ function getOpenSlotIndex(state, predicateInfo) {
   return missingArgument === -1 ? 0 : missingArgument;
 }
 
-function createSampleSentence(predicateInfo) {
-  return predicateInfo.sample
-    .map(
-      (text, index) => `
-        <div class="sample-chip" style="animation-delay:${index * 160}ms">${text}</div>
-      `
-    )
-    .join("");
-}
-
 function createSentenceSlots(predicateInfo, state, level) {
   return predicateInfo.slots
     .map((slot, index) => {
@@ -1100,11 +1090,6 @@ function renderPage(levelKey) {
           <p class="live-sentence">${sentenceText}</p>
           ${state.feedback ? `<p class="feedback${state.feedbackTone === "success" ? " success" : ""}${state.feedbackTone === "error" ? " error" : ""}">${state.feedback}</p>` : ""}
         </div>
-      </section>
-      <section class="panel" style="margin-top:14px">
-        <h2>샘플 문장</h2>
-        <p class="panel-note">샘플에서는 논항이 왼쪽부터 차례대로 나타납니다.</p>
-        <div class="sample-line">${createSampleSentence(predicateInfo)}</div>
       </section>
       <div class="choice-columns">
         <section class="panel">
