@@ -6,6 +6,18 @@ function predicate(word, type, slots, sample, argumentsList) {
   return { word, type, slots, sample, arguments: argumentsList };
 }
 
+const PARTICLE_HINTS = {
+  주어: "이/가",
+  목적어: "을/를",
+  대상: "에게/한테",
+  내용: "을/를",
+  장소: "에/에서",
+  도착점: "에",
+  출발점: "에서",
+  위치: "에",
+  보어: "로/으로"
+};
+
 const LEVEL_DATA = {
   beginner: {
     title: "초급",
@@ -979,7 +991,9 @@ function createSentenceSlots(predicateInfo, state, level) {
   return predicateInfo.slots
     .map((slot, index) => {
       const selectedArgument = state.selectedArguments[index];
-      const particleLabel = level.hideParticlesInSlots ? "" : slot.particle || "";
+      const particleLabel = level.hideParticlesInSlots
+        ? ""
+        : PARTICLE_HINTS[slot.role] || slot.particle || "";
       const isCurrent = state.focusSlot === index;
       const isFilled = Boolean(selectedArgument);
       const isBurst = state.lastFilledSlot === index;
@@ -988,8 +1002,10 @@ function createSentenceSlots(predicateInfo, state, level) {
       return `
         <button type="button" class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}${isInvalid ? " invalid" : ""}" data-slot-index="${index}">
           <span class="answer-role">${slot.role}</span>
-          <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
-          <span class="answer-text">${selectedArgument ? selectedArgument.text : " "}</span>
+          <span class="answer-inline">
+            <span class="answer-text">${selectedArgument ? selectedArgument.text : " "}</span>
+            <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
+          </span>
         </button>
       `;
     })
@@ -1002,25 +1018,19 @@ function createPredicateButtons(level, currentIndex) {
       choiceButton(
         item.word,
         `predicate-button${index === currentIndex ? " active" : ""}`,
-        { index },
-        `${item.type} · ${item.slots.length}개 논항`
+        { index }
       )
     )
     .join("");
 }
 
 function createArgumentButtons(predicateInfo, state) {
-  const currentRole = predicateInfo.slots[state.focusSlot]?.role;
   return predicateInfo.arguments
     .map((item, index) => {
-      const isCurrentRole = item.role === currentRole;
-      const isDisabled = !isCurrentRole;
-      const detail = item.valid ? item.role : `${item.role} · 선택 제약 위반`;
       return choiceButton(
         item.text,
-        `arg-chip${isDisabled ? " muted" : ""}${!item.valid ? " danger" : ""}`,
-        { argIndex: index },
-        detail
+        `arg-chip${!item.valid ? " danger" : ""}`,
+        { argIndex: index }
       );
     })
     .join("");
@@ -1103,7 +1113,7 @@ function renderPage(levelKey) {
         </section>
         <section class="panel">
           <h2>논항 후보</h2>
-          <p class="panel-note">현재 선택 중인 칸: ${predicateInfo.slots[state.focusSlot].role}</p>
+          <p class="panel-note">비어 있는 칸을 왼쪽부터 채우고, 완성 후에는 바꿀 칸을 눌러 다시 고칠 수 있습니다.</p>
           <div class="candidate-list">
             ${createArgumentButtons(predicateInfo, state)}
           </div>
@@ -1141,16 +1151,6 @@ function renderPage(levelKey) {
         const targetSlotIndex = isCompleted(predicateInfo, state, level)
           ? state.focusSlot
           : getOpenSlotIndex(state, predicateInfo);
-        const currentRole = predicateInfo.slots[targetSlotIndex].role;
-
-        if (selected.role !== currentRole) {
-          state.feedback = "지금 고르는 칸과 역할이 맞지 않습니다.";
-          state.feedbackTone = "error";
-          state.lastFilledSlot = null;
-          state.invalidSlot = targetSlotIndex;
-          redraw();
-          return;
-        }
 
         state.selectedArguments[targetSlotIndex] = selected;
         state.invalidSlot = selected.valid === false ? targetSlotIndex : null;

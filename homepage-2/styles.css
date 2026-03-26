@@ -295,7 +295,7 @@ h1 {
   content: "";
   position: absolute;
   inset: -20%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 230, 210, 0.7) 28%, rgba(255, 230, 210, 0) 62%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(255, 230, 210, 0.22) 28%, rgba(255, 230, 210, 0) 62%);
   animation: slotFlash 680ms ease-out;
   pointer-events: none;
 }
@@ -322,22 +322,32 @@ h1 {
   font-weight: 700;
 }
 
+.answer-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  flex-wrap: wrap;
+}
+
 .answer-particle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 30px;
+  min-width: 42px;
   min-height: 28px;
   padding: 0 8px;
   border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+  background: #fff2e8;
+  color: #7c3b1f;
   font-size: 0.8rem;
   font-weight: 800;
+  border: 1px solid #efcfbb;
 }
 
 .answer-text {
   font-weight: 700;
+  color: var(--text);
 }
 
 .live-sentence {
@@ -366,8 +376,9 @@ h1 {
 
 .candidate-grid {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   margin-top: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .candidate-list {
@@ -396,8 +407,11 @@ h1 {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-weight: 700;
+  min-height: 48px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .predicate-button small {
@@ -436,10 +450,6 @@ h1 {
   color: var(--muted);
   font-size: 0.74rem;
   font-weight: 600;
-}
-
-.arg-chip.muted {
-  opacity: 0.55;
 }
 
 .arg-chip.danger {
@@ -497,13 +507,13 @@ h1 {
   }
 
   55% {
-    transform: scale(1.08);
-    box-shadow: 0 18px 34px rgba(204, 99, 56, 0.24);
+    transform: scale(1.05);
+    box-shadow: 0 12px 20px rgba(204, 99, 56, 0.14);
   }
 
   100% {
     transform: scale(1);
-    box-shadow: 0 12px 24px rgba(204, 99, 56, 0.14);
+    box-shadow: 0 8px 14px rgba(204, 99, 56, 0.08);
   }
 }
 
