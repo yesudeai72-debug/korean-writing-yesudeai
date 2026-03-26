@@ -6,6 +6,18 @@ function predicate(word, type, slots, sample, argumentsList) {
   return { word, type, slots, sample, arguments: argumentsList };
 }
 
+const ROLE_PARTICLES = {
+  주어: ["이", "가"],
+  목적어: ["을", "를"],
+  대상: ["에게", "한테", "와", "과", "에"],
+  내용: ["을", "를"],
+  장소: ["에", "에서"],
+  도착점: ["에"],
+  출발점: ["에서"],
+  위치: ["에"],
+  보어: ["로", "으로"]
+};
+
 const PARTICLE_HINTS = {
   주어: "이/가",
   목적어: "을/를",
@@ -974,7 +986,9 @@ function choiceButton(label, classes, dataset, detail = "") {
 function getDefaultState(predicateInfo) {
   return {
     selectedArguments: Array.from({ length: predicateInfo.slots.length }, () => null),
+    selectedParticles: Array.from({ length: predicateInfo.slots.length }, () => null),
     focusSlot: 0,
+    focusParticleSlot: null,
     feedback: "",
     lastFilledSlot: null,
     feedbackTone: "",
@@ -985,6 +999,13 @@ function getDefaultState(predicateInfo) {
 function getOpenSlotIndex(state, predicateInfo) {
   const missingArgument = state.selectedArguments.findIndex((value) => value === null);
   return missingArgument === -1 ? 0 : missingArgument;
+}
+
+function getOpenParticleSlotIndex(state, predicateInfo) {
+  const missingParticle = state.selectedParticles.findIndex((value, index) => {
+    return predicateInfo.slots[index].particle && value === null;
+  });
+  return missingParticle === -1 ? 0 : missingParticle;
 }
 
 function createSentenceSlots(predicateInfo, state, level) {
@@ -1036,6 +1057,39 @@ function createArgumentButtons(predicateInfo, state) {
     .join("");
 }
 
+function createParticleSlots(predicateInfo, state) {
+  return predicateInfo.slots
+    .map((slot, index) => {
+      const selected = state.selectedParticles[index];
+      const active = state.focusParticleSlot === index;
+      return `
+        <button type="button" class="particle-slot${active ? " active" : ""}" data-particle-slot-index="${index}">
+          <span class="particle-slot-role">${slot.role}</span>
+          <span class="particle-slot-value">${selected || "조사 선택"}</span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function createParticleButtons(predicateInfo, state) {
+  const slotIndex = state.focusParticleSlot ?? 0;
+  const role = predicateInfo.slots[slotIndex] ? predicateInfo.slots[slotIndex].role : "";
+  const options = ROLE_PARTICLES[role] || [];
+  if (!options.length) {
+    return `<div class="hint-item"><strong>조사 후보 안내</strong> 먼저 논항을 넣거나 다른 조사 박스를 선택해 주세요.</div>`;
+  }
+  return options
+    .map((particle, index) =>
+      choiceButton(
+        particle,
+        `particle-chip${state.selectedParticles[slotIndex] === particle ? " active" : ""}`,
+        { particleIndex: index, particleValue: particle }
+      )
+    )
+    .join("");
+}
+
 function buildSentenceText(predicateInfo, state, level) {
   return predicateInfo.slots
     .map((slot, index) => {
@@ -1044,7 +1098,7 @@ function buildSentenceText(predicateInfo, state, level) {
         return `[${slot.role}]`;
       }
       if (level.hideParticlesInSlots) {
-        return argumentInfo.text;
+        return `${argumentInfo.text}${state.selectedParticles[index] || "[조사]"}`;
       }
       return `${argumentInfo.text}${slot.particle || ""}`;
     })
@@ -1053,7 +1107,16 @@ function buildSentenceText(predicateInfo, state, level) {
 }
 
 function isCompleted(predicateInfo, state, level) {
-  return state.selectedArguments.every(Boolean);
+  const argsDone = state.selectedArguments.every(Boolean);
+  if (!argsDone) {
+    return false;
+  }
+  if (!level.hideParticlesInSlots) {
+    return true;
+  }
+  return state.selectedParticles.every((value, index) => {
+    return predicateInfo.slots[index].particle ? Boolean(value) : true;
+  });
 }
 
 function validateCurrentState(predicateInfo, state, level) {
@@ -1100,6 +1163,7 @@ function renderPage(levelKey) {
             ${createSentenceSlots(predicateInfo, state, level)}
             <div class="predicate-box fixed">${predicateInfo.word}</div>
           </div>
+          ${level.hideParticlesInSlots ? `<div class="particle-slot-row">${createParticleSlots(predicateInfo, state)}</div>` : ""}
           <p class="live-sentence">${sentenceText}</p>
           ${state.feedback ? `<p class="feedback${state.feedbackTone === "success" ? " success" : ""}${state.feedbackTone === "error" ? " error" : ""}">${state.feedback}</p>` : ""}
         </div>
@@ -1117,6 +1181,13 @@ function renderPage(levelKey) {
           <div class="candidate-list">
             ${createArgumentButtons(predicateInfo, state)}
           </div>
+          ${level.hideParticlesInSlots ? `
+          <h2 style="margin-top:18px">조사 후보</h2>
+          <p class="panel-note">논항을 채운 뒤 조사 박스를 눌러 해당 조사도 선택하세요.</p>
+          <div class="candidate-list">
+            ${createParticleButtons(predicateInfo, state)}
+          </div>
+          ` : ""}
           <div class="hint-list" style="margin-top:18px">
             <div class="hint-item"><strong>${level.hideParticlesInSlots ? "고급 규칙" : "초·중급 규칙"}</strong> ${level.hideParticlesInSlots ? "고급은 조사 없이 빈 칸이 주어집니다. 의미 관계를 보고 논항을 넣어 보세요." : "초급과 중급은 각 칸 안에 조사가 먼저 보입니다. 알맞은 논항을 눌러 문장을 채워 보세요."}</div>
           </div>
@@ -1134,7 +1205,7 @@ function renderPage(levelKey) {
 
     app.querySelectorAll("[data-slot-index]").forEach((button) => {
       button.addEventListener("click", () => {
-        if (isCompleted(predicateInfo, state, level)) {
+        if (state.selectedArguments.every(Boolean)) {
           state.focusSlot = Number(button.dataset.slotIndex);
           state.feedback = "바꿀 칸을 선택했습니다. 해당 역할의 논항 후보를 눌러 바꿔 보세요.";
           state.feedbackTone = "";
@@ -1145,25 +1216,56 @@ function renderPage(levelKey) {
       });
     });
 
+    app.querySelectorAll("[data-particle-slot-index]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.focusParticleSlot = Number(button.dataset.particleSlotIndex);
+        state.feedback = "조사 박스를 선택했습니다. 아래 조사 후보에서 골라 보세요.";
+        state.feedbackTone = "";
+        redraw();
+      });
+    });
+
     app.querySelectorAll("[data-arg-index]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = predicateInfo.arguments[Number(button.dataset.argIndex)];
-        const targetSlotIndex = isCompleted(predicateInfo, state, level)
+        const targetSlotIndex = state.selectedArguments.every(Boolean)
           ? state.focusSlot
           : getOpenSlotIndex(state, predicateInfo);
 
         state.selectedArguments[targetSlotIndex] = selected;
         state.invalidSlot = selected.valid === false ? targetSlotIndex : null;
+        if (level.hideParticlesInSlots && state.selectedParticles[targetSlotIndex] === null) {
+          state.focusParticleSlot = targetSlotIndex;
+        }
         if (isCompleted(predicateInfo, state, level)) {
           const result = validateCurrentState(predicateInfo, state, level);
           state.feedback = result.message;
           state.feedbackTone = result.tone;
         } else {
-          state.feedback = "다음 칸을 눌러 논항을 이어서 선택하세요.";
+          state.feedback = level.hideParticlesInSlots
+            ? "논항을 넣었습니다. 조사 박스도 함께 채워 보세요."
+            : "다음 칸을 눌러 논항을 이어서 선택하세요.";
           state.feedbackTone = "";
         }
         state.focusSlot = getOpenSlotIndex(state, predicateInfo);
         state.lastFilledSlot = targetSlotIndex;
+        redraw();
+      });
+    });
+
+    app.querySelectorAll("[data-particle-value]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetSlotIndex = state.focusParticleSlot ?? getOpenParticleSlotIndex(state, predicateInfo);
+        state.selectedParticles[targetSlotIndex] = button.dataset.particleValue;
+        if (isCompleted(predicateInfo, state, level)) {
+          const result = validateCurrentState(predicateInfo, state, level);
+          state.feedback = result.message;
+          state.feedbackTone = result.tone;
+        } else {
+          state.feedback = "조사를 넣었습니다. 다음 논항이나 조사를 이어서 선택하세요.";
+          state.feedbackTone = "";
+        }
+        state.focusParticleSlot = getOpenParticleSlotIndex(state, predicateInfo);
         redraw();
       });
     });
