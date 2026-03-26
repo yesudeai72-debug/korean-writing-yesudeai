@@ -986,11 +986,11 @@ function createSentenceSlots(predicateInfo, state, level) {
       const isInvalid = state.invalidSlot === index;
 
       return `
-        <div class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}${isInvalid ? " invalid" : ""}">
+        <button type="button" class="answer-slot${isCurrent ? " active" : ""}${isFilled ? " filled" : ""}${isBurst ? " burst" : ""}${isInvalid ? " invalid" : ""}" data-slot-index="${index}">
           <span class="answer-role">${slot.role}</span>
           <span class="answer-particle">${particleLabel || "&nbsp;"}</span>
           <span class="answer-text">${selectedArgument ? selectedArgument.text : " "}</span>
-        </div>
+        </button>
       `;
     })
     .join("");
@@ -1122,23 +1122,38 @@ function renderPage(levelKey) {
       });
     });
 
+    app.querySelectorAll("[data-slot-index]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (isCompleted(predicateInfo, state, level)) {
+          state.focusSlot = Number(button.dataset.slotIndex);
+          state.feedback = "바꿀 칸을 선택했습니다. 해당 역할의 논항 후보를 눌러 바꿔 보세요.";
+          state.feedbackTone = "";
+          state.lastFilledSlot = null;
+          state.invalidSlot = null;
+          redraw();
+        }
+      });
+    });
+
     app.querySelectorAll("[data-arg-index]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = predicateInfo.arguments[Number(button.dataset.argIndex)];
-        const openSlotIndex = getOpenSlotIndex(state, predicateInfo);
-        const currentRole = predicateInfo.slots[openSlotIndex].role;
+        const targetSlotIndex = isCompleted(predicateInfo, state, level)
+          ? state.focusSlot
+          : getOpenSlotIndex(state, predicateInfo);
+        const currentRole = predicateInfo.slots[targetSlotIndex].role;
 
         if (selected.role !== currentRole) {
           state.feedback = "지금 고르는 칸과 역할이 맞지 않습니다.";
           state.feedbackTone = "error";
           state.lastFilledSlot = null;
-          state.invalidSlot = openSlotIndex;
+          state.invalidSlot = targetSlotIndex;
           redraw();
           return;
         }
 
-        state.selectedArguments[openSlotIndex] = selected;
-        state.invalidSlot = selected.valid === false ? openSlotIndex : null;
+        state.selectedArguments[targetSlotIndex] = selected;
+        state.invalidSlot = selected.valid === false ? targetSlotIndex : null;
         if (isCompleted(predicateInfo, state, level)) {
           const result = validateCurrentState(predicateInfo, state, level);
           state.feedback = result.message;
@@ -1148,7 +1163,7 @@ function renderPage(levelKey) {
           state.feedbackTone = "";
         }
         state.focusSlot = getOpenSlotIndex(state, predicateInfo);
-        state.lastFilledSlot = openSlotIndex;
+        state.lastFilledSlot = targetSlotIndex;
         redraw();
       });
     });
