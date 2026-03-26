@@ -3,75 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>홈페이지 작업2</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --bg: #f7f3ea;
-        --card: #fffdf8;
-        --text: #1f1a17;
-        --accent: #b85c38;
-        --line: #dfd2c2;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-        background: linear-gradient(180deg, #f3eadb 0%, var(--bg) 100%);
-        color: var(--text);
-      }
-
-      main {
-        max-width: 760px;
-        margin: 0 auto;
-        padding: 48px 20px 72px;
-      }
-
-      .card {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 14px 40px rgba(70, 45, 20, 0.08);
-      }
-
-      h1 {
-        margin-top: 0;
-        font-size: clamp(2rem, 5vw, 3rem);
-      }
-
-      p {
-        line-height: 1.7;
-      }
-
-      ul {
-        line-height: 1.8;
-        padding-left: 20px;
-      }
-
-      .accent {
-        color: var(--accent);
-        font-weight: 700;
-      }
-    </style>
+    <title>문장을 만들어요</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main>
-      <section class="card">
-        <h1>홈페이지 작업2</h1>
-        <p>
-          이 폴더는 <span class="accent">두 번째 한국어 도구</span>를 만들기 위한
-          별도 작업 공간입니다.
+    <main class="page">
+      <section class="hero">
+        <span class="eyebrow">Mobile First Korean Tool</span>
+        <h1>문장을 만들어요</h1>
+        <p class="lead">
+          외국인 학습자가 서술어를 중심으로 논항 수와 조사를 함께 보며
+          문장을 구성하는 연습을 할 수 있도록 만든 화면입니다.
         </p>
-        <ul>
-          <li>`korean-writing-yesudeai`는 그대로 두고 사용합니다.</li>
-          <li>이 프로젝트는 따로 만들고, 나중에 링크로 연결할 수 있습니다.</li>
-          <li>`C1`, `C2` 폴더에서 단계별 작업을 이어가면 됩니다.</li>
-        </ul>
+        <div class="level-grid">
+          <a class="level-card" href="./초급/index.html">
+            <span class="level-name">초급</span>
+            <span class="level-desc">
+              기초어휘 1, 2단계를 기준으로 짧은 문장과 기본 논항 구조를 먼저
+              익힙니다.
+            </span>
+            <span class="level-badge">샘플 20개 서술어</span>
+          </a>
+          <a class="level-card" href="./중급/index.html">
+            <span class="level-name">중급</span>
+            <span class="level-desc">
+              기초어휘 3, 4단계에서 논항 관계가 조금 더 복잡한 서술어를 연습합니다.
+            </span>
+            <span class="level-badge">샘플 20개 서술어</span>
+          </a>
+          <a class="level-card" href="./고급/index.html">
+            <span class="level-name">고급</span>
+            <span class="level-desc">
+              실험 대상인 고급 학습자를 위해 서술어 중심 문장 구성을 집중적으로
+              다룹니다.
+            </span>
+            <span class="level-badge">샘플 20개 서술어</span>
+          </a>
+        </div>
       </section>
     </main>
   </body>
