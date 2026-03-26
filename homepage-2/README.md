@@ -7,9 +7,9 @@
 - `index.html`: 메인 화면
 - `styles.css`: 공통 모바일 스타일
 - `app.js`: 급수별 샘플 데이터와 상호작용
-- `초급/index.html`: 초급 화면
-- `중급/index.html`: 중급 화면
-- `고급/index.html`: 고급 화면
+- `beginner/index.html`: 초급 화면
+- `intermediate/index.html`: 중급 화면
+- `advanced/index.html`: 고급 화면
 
 ## 메모
 
