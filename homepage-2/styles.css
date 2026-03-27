@@ -355,15 +355,15 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 42px;
-  min-height: 28px;
-  padding: 0 8px;
+  min-width: 54px;
+  min-height: 34px;
+  padding: 0 12px;
   border-radius: 999px;
-  background: #fff2e8;
-  color: #7c3b1f;
-  font-size: 0.8rem;
-  font-weight: 800;
-  border: 1px solid #efcfbb;
+  background: #ffd8c2;
+  color: #6b260b;
+  font-size: 0.94rem;
+  font-weight: 900;
+  border: 1px solid #d98d65;
 }
 
 .answer-text {
