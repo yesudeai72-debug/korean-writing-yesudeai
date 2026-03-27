@@ -6,16 +6,21 @@ function predicate(word, type, slots, sample, argumentsList) {
   return { word, type, slots, sample, arguments: argumentsList };
 }
 
-const ROLE_PARTICLES = {
-  주어: ["이", "가"],
-  목적어: ["을", "를"],
-  대상: ["에게", "한테", "와", "과", "에"],
-  내용: ["을", "를"],
-  장소: ["에", "에서"],
-  도착점: ["에"],
-  출발점: ["에서"],
-  위치: ["에"],
-  보어: ["로", "으로"]
+const PARTICLE_OPTIONS = {
+  이: ["이", "가"],
+  가: ["이", "가"],
+  은: ["은", "는"],
+  는: ["은", "는"],
+  을: ["을", "를"],
+  를: ["을", "를"],
+  와: ["와", "과"],
+  과: ["와", "과"],
+  로: ["로", "으로"],
+  으로: ["로", "으로"],
+  에게: ["에게", "한테"],
+  한테: ["에게", "한테"],
+  에: ["에"],
+  에서: ["에서"]
 };
 
 const PARTICLE_HINTS = {
@@ -1074,8 +1079,8 @@ function createParticleSlots(predicateInfo, state) {
 
 function createParticleButtons(predicateInfo, state) {
   const slotIndex = state.focusParticleSlot ?? 0;
-  const role = predicateInfo.slots[slotIndex] ? predicateInfo.slots[slotIndex].role : "";
-  const options = ROLE_PARTICLES[role] || [];
+  const slot = predicateInfo.slots[slotIndex];
+  const options = slot ? PARTICLE_OPTIONS[slot.particle] || [slot.particle] : [];
   if (!options.length) {
     return `<div class="hint-item"><strong>조사 후보 안내</strong> 먼저 논항을 넣거나 다른 조사 박스를 선택해 주세요.</div>`;
   }
